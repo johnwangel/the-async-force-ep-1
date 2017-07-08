@@ -1,6 +1,6 @@
 const doc = document;
 
-var oReq = new XMLHttpRequest("json");
+var oReq = new XMLHttpRequest();
 oReq.addEventListener("load", reqListener);
 oReq.open("GET", "http://swapi.co/api/people/4/");
 oReq.send();
@@ -15,24 +15,21 @@ oReq3.addEventListener("load", reqListener3);
 oReq3.open("GET", "http://swapi.co/api/films/");
 oReq3.send();
 
-function makeElemWithText(id, text){
-  let elem = doc.getElementById(id);
-  elem.innerHTML = text;
-  return elem;
+function makeXHRReq( ) {
+  let req = new XMLHttpRequest();
 }
 
-function makeElemWithClassAndText(id, classAttr, text){
+function setNode(id, classAttr, text){
   let elem = doc.getElementById(id);
-  elem.setAttribute('class', classAttr);
-  elem.innerHTML = text;
+  if (classAttr !== null) elem.setAttribute('class', classAttr);
+  if (text !== null) elem.innerHTML = text;
   return elem;
 }
 
 function reqListener() {
   obj = JSON.parse(this.response);
-  const name = doc.getElementById("person4Name");
-  const homeworld = doc.getElementById("person4HomeWorld");
-  name.innerHTML = obj.name;
+  setNode("person4Name", null, obj.name);
+
   var homeReq = new XMLHttpRequest();
   homeReq.addEventListener("load", homeReqListener);
   homeReq.open("GET", obj.homeworld);
@@ -40,15 +37,13 @@ function reqListener() {
 
   function homeReqListener() {
     let homeworldObj = JSON.parse(this.response);
-    homeworld.innerHTML = homeworldObj.name;
+    setNode('person4HomeWorld', null, homeworldObj.name);
   }
 }
 
 function reqListener2() {
   obj = JSON.parse(this.response);
-  const name2 = doc.getElementById("person14Name");
-  const species = doc.getElementById("person14Species");
-  name2.innerHTML = obj.name;
+  setNode('person14Name', null, obj.name);
 
   var req = new XMLHttpRequest();
   req.addEventListener("load", reqListener);
@@ -57,41 +52,43 @@ function reqListener2() {
 
   function reqListener() {
     let speciesObj = JSON.parse(this.response);
-    species.innerHTML = speciesObj.name;
+    setNode('person14Species', null, speciesObj.name)
   }
+}
+
+function makeNode(el, classAttr, text){
+  let elem = doc.createElement(el);
+  if (classAttr !== null) elem.setAttribute('class', classAttr);
+  if (text !== null) elem.innerHTML = text;
+  return elem;
 }
 
 function reqListener3() {
   obj = JSON.parse(this.response);
   const filmUL = doc.getElementById("filmList");
+
   let filmArray = obj.results;
   for (var i = 0; i < filmArray.length; i++) {
 
-    let listItem = doc.createElement('li');
-    listItem.setAttribute('class', 'film');
-    let titleHead = doc.createElement('h2');
-    titleHead.setAttribute('class', 'filmTitle');
-    titleHead.innerHTML = filmArray[i].title;
+    let listItem = makeNode('li', 'film', null);
+    let titleHead = makeNode('h2', 'filmTitle', filmArray[i].title);
     listItem.appendChild(titleHead);
-    let planetHead = doc.createElement('h3');
-    planetHead.innerHTML = "Planets";
+    let planetHead = makeNode('h3', null, "Planets");
     listItem.appendChild(planetHead);
 
     let ulist = doc.createElement('ul');
     ulist.setAttribute('class', 'filmPlanets');
 
-    let planetList = filmArray[i].planets;
+    let planetArray = filmArray[i].planets;
 
-    for (var j = 0; j < planetList.length; j++) {
+    for (var j = 0; j < planetArray.length; j++) {
 
-      let planetListItem = doc.createElement('li');
-      planetListItem.setAttribute('class', 'planet');
-      let planetName = doc.createElement('h4');
-      planetName.setAttribute('class', 'planetName');
+      let planetListItem = makeNode('li', 'planet', null);
+      let planetName = makeNode('h4', 'planetName', null);
 
       var req = new XMLHttpRequest();
       req.addEventListener("load", reqListener);
-      req.open("GET", planetList[j]);
+      req.open("GET", planetArray[j]);
       req.send();
 
       function reqListener() {
