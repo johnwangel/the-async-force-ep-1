@@ -1,6 +1,5 @@
 const doc = document;
 
-
 var oReq = new XMLHttpRequest("json");
 oReq.addEventListener("load", reqListener);
 oReq.open("GET", "http://swapi.co/api/people/4/");
@@ -16,6 +15,18 @@ oReq3.addEventListener("load", reqListener3);
 oReq3.open("GET", "http://swapi.co/api/films/");
 oReq3.send();
 
+function makeElemWithText(id, text){
+  let elem = doc.getElementById(id);
+  elem.innerHTML = text;
+  return elem;
+}
+
+function makeElemWithClassAndText(id, classAttr, text){
+  let elem = doc.getElementById(id);
+  elem.setAttribute('class', classAttr);
+  elem.innerHTML = text;
+  return elem;
+}
 
 function reqListener() {
   obj = JSON.parse(this.response);
@@ -31,7 +42,6 @@ function reqListener() {
     let homeworldObj = JSON.parse(this.response);
     homeworld.innerHTML = homeworldObj.name;
   }
-
 }
 
 function reqListener2() {
@@ -49,7 +59,6 @@ function reqListener2() {
     let speciesObj = JSON.parse(this.response);
     species.innerHTML = speciesObj.name;
   }
-
 }
 
 function reqListener3() {
@@ -57,6 +66,7 @@ function reqListener3() {
   const filmUL = doc.getElementById("filmList");
   let filmArray = obj.results;
   for (var i = 0; i < filmArray.length; i++) {
+
     let listItem = doc.createElement('li');
     listItem.setAttribute('class', 'film');
     let titleHead = doc.createElement('h2');
@@ -71,7 +81,9 @@ function reqListener3() {
     ulist.setAttribute('class', 'filmPlanets');
 
     let planetList = filmArray[i].planets;
+
     for (var j = 0; j < planetList.length; j++) {
+
       let planetListItem = doc.createElement('li');
       planetListItem.setAttribute('class', 'planet');
       let planetName = doc.createElement('h4');
@@ -86,15 +98,12 @@ function reqListener3() {
         let reqObj = JSON.parse(this.response);
         planetName.innerHTML = reqObj.name;
       }
-
       planetListItem.appendChild(planetName);
       ulist.appendChild(planetListItem);
-
     }
+
     listItem.appendChild(ulist);
     filmUL.appendChild(listItem);
   }
-
-
 
 }
